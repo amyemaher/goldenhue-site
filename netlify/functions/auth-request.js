@@ -11,6 +11,8 @@ exports.handler = async (event) => {
     'Content-Type': 'application/json',
   };
 
+  try {
+
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ message: 'Method not allowed' }) };
 
@@ -71,4 +73,9 @@ exports.handler = async (event) => {
   }
 
   return { statusCode: 200, headers, body: JSON.stringify({ message: 'Code sent' }) };
+
+  } catch (err) {
+    console.error('auth-request error:', err);
+    return { statusCode: 500, headers, body: JSON.stringify({ message: err.message || 'Internal error' }) };
+  }
 };
