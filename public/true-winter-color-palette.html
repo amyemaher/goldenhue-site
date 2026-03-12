@@ -22,9 +22,8 @@
   <meta property="og:url" content="https://goldenhue.shop/blog/true-winter-color-palette" />
   <meta property="og:type" content="article" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Josefin+Sans:wght@200;300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Josefin+Sans:wght@200;300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,74 +38,61 @@
       --summer:   #3d7abf;
       --autumn:   #c03a10;
       --winter:   #9c1850;
-      --accent:   var(--summer);
     }
-
-    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Jost', sans-serif;
-      font-weight: 300;
       background: var(--paper);
       color: var(--ink);
       line-height: 1.75;
+      overflow-x: hidden;
     }
 
-    /* ── NAV ── */
+    /* ── Nav ── */
     nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 56px;
+      background: var(--white);
+      border-bottom: 1px solid var(--rule);
       position: sticky;
       top: 0;
-      z-index: 200;
-      background: rgba(247,243,237,0.96);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--rule);
-      padding: 0 40px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      z-index: 100;
     }
     .wordmark {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 300;
-      font-size: 1rem;
+      font-size: 22px;
       letter-spacing: 8px;
+      text-transform: uppercase;
       color: var(--ink);
       text-decoration: none;
-      text-transform: uppercase;
     }
-    .wordmark .pop { color: var(--summer); }
-    nav .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-    nav .nav-links a {
+    .wordmark .pop { color: var(--spring); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
       font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
       font-size: 9px;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--warm-mid);
       text-decoration: none;
-      transition: color 0.15s;
+      transition: color 0.2s;
     }
-    nav .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover { color: var(--ink); }
     .nav-cta {
       font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
       font-size: 9px;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       background: var(--ink);
-      color: var(--paper);
+      color: var(--white);
+      padding: 10px 22px;
       text-decoration: none;
-      padding: 9px 18px;
-      border-radius: 2px;
-      transition: opacity 0.15s;
+      transition: background 0.2s;
     }
-    .nav-cta:hover { opacity: 0.82; }
+    .nav-cta:hover { background: var(--spring); }
 
     /* ── Hero ── */
     .hero {
@@ -116,19 +102,20 @@
     }
     .breadcrumb {
       font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
       font-size: 9px;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--warm-mid);
       margin-bottom: 20px;
     }
-    .breadcrumb a { color: var(--summer); text-decoration: none; }
+    .breadcrumb a { color: var(--warm-mid); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--ink); }
     h1 {
       font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
       font-weight: 300;
-      font-size: clamp(1.9rem, 4.5vw, 2.8rem);
       line-height: 1.18;
+      letter-spacing: -0.02em;
       margin-bottom: 20px;
       color: var(--ink);
     }
@@ -136,7 +123,6 @@
       display: flex;
       gap: 20px;
       font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
       font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -165,8 +151,9 @@
 
     .article h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-weight: 300;
       font-size: 1.7rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
       color: var(--ink);
       margin: 52px 0 18px;
       padding-bottom: 12px;
@@ -174,46 +161,27 @@
     }
     .article h3 {
       font-family: 'Josefin Sans', sans-serif;
-      font-weight: 400;
       font-size: 10px;
-      letter-spacing: 2.5px;
+      font-weight: 400;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--ink);
+      color: var(--warm-mid);
       margin: 28px 0 10px;
     }
     .article p {
       margin-bottom: 18px;
-      color: var(--warm-mid);
+      color: var(--ink);
       font-size: 1rem;
+      line-height: 1.8;
     }
-    .article p strong { color: var(--ink); font-weight: 400; }
+    .article p strong { color: var(--ink); font-weight: 500; }
     .article a { color: var(--summer); }
     .article ul, .article ol {
       margin: 10px 0 18px 20px;
-      color: var(--warm-mid);
+      color: var(--ink);
     }
-    .article li { margin-bottom: 7px; }
-    .article li strong { color: var(--ink); font-weight: 400; }
-
-    /* ── TOC ── */
-    .toc {
-      background: var(--white);
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      padding: 20px 24px;
-      margin-bottom: 32px;
-    }
-    .toc p {
-      font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--warm-mid);
-      margin-bottom: 12px;
-    }
-    .toc ol { margin: 0 0 0 18px; color: var(--warm-mid); font-size: 0.88rem; line-height: 1.9; }
-    .toc a { color: var(--summer); text-decoration: none; }
+    .article li { margin-bottom: 7px; line-height: 1.7; }
+    .article li strong { color: var(--ink); font-weight: 500; }
 
     /* ── Color grid ── */
     .color-grid {
@@ -226,9 +194,11 @@
       border-radius: 4px;
       overflow: hidden;
       border: 1px solid var(--rule);
-      background: var(--white);
     }
-    .color-swatch { height: 72px; width: 100%; }
+    .color-swatch {
+      height: 72px;
+      width: 100%;
+    }
     .color-label {
       background: var(--white);
       padding: 8px 10px;
@@ -236,7 +206,7 @@
       color: var(--warm-mid);
       line-height: 1.3;
     }
-    .color-label strong { display: block; color: var(--ink); font-size: 0.8rem; font-weight: 400; margin-bottom: 2px; }
+    .color-label strong { display: block; color: var(--ink); font-size: 0.8rem; font-weight: 500; margin-bottom: 2px; }
 
     /* ── Avoid grid ── */
     .avoid-grid {
@@ -249,16 +219,18 @@
       border-radius: 4px;
       overflow: hidden;
       border: 1px solid var(--rule);
-      background: var(--white);
       position: relative;
     }
-    .avoid-swatch { height: 72px; width: 100%; }
+    .avoid-swatch {
+      height: 72px;
+      width: 100%;
+    }
     .avoid-x {
       position: absolute;
       top: 6px;
       right: 8px;
       font-size: 1.1rem;
-      color: rgba(255,255,255,0.7);
+      color: rgba(255,255,255,0.85);
       font-weight: 700;
       line-height: 1;
     }
@@ -272,10 +244,10 @@
       padding: 20px 24px;
       margin: 28px 0;
     }
-    .callout.ruby   { border-left-color: var(--winter); }
-    .callout.violet { border-left-color: #5c1ac4; }
+    .callout.ruby    { border-left-color: var(--winter); }
+    .callout.violet  { border-left-color: #5c1ac4; }
     .callout.emerald { border-left-color: #0e7c5b; }
-    .callout p { margin: 0; color: var(--warm-mid); }
+    .callout p { margin: 0; color: var(--ink); }
 
     /* ── Celebrity grid ── */
     .celeb-grid {
@@ -290,17 +262,14 @@
       border-radius: 4px;
       overflow: hidden;
     }
-    .celeb-swatches { display: flex; height: 56px; }
+    .celeb-swatches {
+      display: flex;
+      height: 56px;
+    }
     .celeb-swatches div { flex: 1; }
     .celeb-info { padding: 13px 15px; }
-    .celeb-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 400;
-      font-size: 1rem;
-      color: var(--ink);
-      margin-bottom: 4px;
-    }
-    .celeb-note { font-size: 0.76rem; color: var(--warm-mid); line-height: 1.45; }
+    .celeb-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 400; color: var(--ink); margin-bottom: 4px; }
+    .celeb-note { font-size: 0.76rem; color: var(--warm-mid); line-height: 1.5; }
 
     /* ── Makeup table ── */
     .makeup-table {
@@ -315,19 +284,21 @@
       padding: 10px 14px;
       text-align: left;
       font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
       font-size: 9px;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       border-bottom: 1px solid var(--rule);
+      font-weight: 400;
     }
     .makeup-table td {
       padding: 11px 14px;
       border-bottom: 1px solid var(--rule);
       color: var(--warm-mid);
       vertical-align: top;
+      font-size: 0.85rem;
+      line-height: 1.6;
     }
-    .makeup-table td:first-child { color: var(--ink); font-weight: 400; width: 130px; }
+    .makeup-table td:first-child { color: var(--ink); font-weight: 500; width: 130px; }
     .makeup-table tr:last-child td { border-bottom: none; }
 
     /* ── Waitlist CTA ── */
@@ -341,157 +312,91 @@
     }
     .cta-block h2 {
       font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
       font-weight: 300;
-      font-size: 1.7rem;
       color: var(--ink);
       margin: 0 0 12px;
       border: none;
       padding: 0;
+      letter-spacing: -0.01em;
     }
-    .cta-block p { color: var(--warm-mid); max-width: 460px; margin: 0 auto 28px; }
+    .cta-block p { color: var(--warm-mid); max-width: 460px; margin: 0 auto 28px; line-height: 1.7; }
     .waitlist-form {
       display: flex;
-      gap: 10px;
+      gap: 0;
       max-width: 420px;
       margin: 0 auto;
     }
     .waitlist-form input[type="email"] {
       flex: 1;
       padding: 13px 16px;
-      border-radius: 2px;
       border: 1px solid var(--rule);
+      border-right: none;
       background: var(--paper);
       color: var(--ink);
       font-family: 'Jost', sans-serif;
-      font-weight: 300;
       font-size: 0.9rem;
       outline: none;
       transition: border-color 0.15s;
     }
     .waitlist-form input[type="email"]::placeholder { color: var(--warm-mid); }
-    .waitlist-form input[type="email"]:focus { border-color: var(--ink); }
+    .waitlist-form input[type="email"]:focus { border-color: var(--spring); }
     .waitlist-form button {
-      font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
       padding: 13px 22px;
       background: var(--ink);
-      color: var(--paper);
+      color: var(--white);
       border: none;
-      border-radius: 2px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
       cursor: pointer;
       white-space: nowrap;
-      transition: opacity 0.15s;
+      transition: background 0.15s;
     }
-    .waitlist-form button:hover { opacity: 0.82; }
+    .waitlist-form button:hover { background: var(--spring); }
     .waitlist-confirm {
       display: none;
+      color: var(--summer);
       font-family: 'Josefin Sans', sans-serif;
       font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--summer);
       margin-top: 14px;
     }
 
-    /* ── FOOTER ── */
+    /* ── Footer ── */
     .footer {
       background: var(--paper);
+      padding: 64px 56px 40px;
       border-top: 1px solid var(--rule);
     }
-    .footer-color-band { display: flex; height: 6px; }
-    .footer-color-band div { flex: 1; }
-    .footer-top {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 64px 40px 48px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-    }
-    .footer-headline {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 300;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      line-height: 1.1;
-      color: var(--ink);
-    }
-    .footer-headline em { font-style: italic; }
-    .footer-right-col { display: flex; flex-direction: column; gap: 24px; }
-    .footer-right-text { font-size: 1rem; color: var(--warm-mid); line-height: 1.7; }
-    .footer-waitlist-form { display: flex; gap: 10px; flex-wrap: wrap; }
-    .footer-waitlist-form input[type="email"] {
-      flex: 1;
-      min-width: 180px;
-      padding: 11px 14px;
-      border: 1px solid var(--rule);
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'Jost', sans-serif;
-      font-weight: 300;
-      font-size: 0.88rem;
-      border-radius: 2px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .footer-waitlist-form input[type="email"]:focus { border-color: var(--ink); }
-    .footer-waitlist-form input[type="email"]::placeholder { color: var(--warm-mid); }
-    .footer-waitlist-form button {
-      font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 11px 20px;
-      background: var(--ink);
-      color: var(--paper);
-      border: none;
-      border-radius: 2px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: opacity 0.15s;
-    }
-    .footer-waitlist-form button:hover { opacity: 0.82; }
-    .footer-bottom {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 40px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--rule);
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .footer-wordmark {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 300;
-      font-size: 1rem;
-      letter-spacing: 8px;
-      text-transform: uppercase;
-      color: var(--ink);
-    }
-    .footer-wordmark .pop { color: var(--summer); }
-    .footer-note {
-      font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--warm-mid);
-    }
+    .footer-color-band { display: flex; height: 5px; margin-bottom: 64px; gap: 3px; }
+    .footer-color-seg { flex: 1; border-radius: 3px; }
+    .footer-top { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; padding-bottom: 48px; border-bottom: 1px solid var(--rule); margin-bottom: 32px; }
+    .footer-headline { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 52px; line-height: 1.1; color: var(--ink); letter-spacing: -0.5px; }
+    .footer-headline em { font-style: italic; color: var(--spring); }
+    .footer-right-col { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+    .footer-right-text { font-size: 14px; line-height: 1.9; color: var(--warm-mid); }
+    .footer-waitlist-form { display: flex; }
+    .footer-waitlist-form input { flex: 1; padding: 12px 16px; border: 1px solid var(--rule); border-right: none; background: var(--white); font-family: 'Jost', sans-serif; font-size: 13px; color: var(--ink); outline: none; }
+    .footer-waitlist-form input:focus { border-color: var(--spring); }
+    .footer-waitlist-form button { padding: 12px 20px; background: var(--ink); color: var(--white); border: none; font-family: 'Josefin Sans', sans-serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+    .footer-waitlist-form button:hover { background: var(--spring); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+    .footer-wordmark { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 20px; letter-spacing: 8px; text-transform: uppercase; color: var(--ink); opacity: 0.5; }
+    .footer-wordmark .pop { color: var(--spring); opacity: 1; }
+    .footer-note { font-family: 'Josefin Sans', sans-serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--warm-mid); }
 
     @media (max-width: 600px) {
-      nav { padding: 0 20px; }
-      nav .nav-links { display: none; }
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
       .hero, .article { padding-left: 18px; padding-right: 18px; }
       .cta-block { padding: 36px 24px; }
-      .waitlist-form { flex-direction: column; }
-      .footer-top { grid-template-columns: 1fr; gap: 32px; padding: 40px 24px 32px; }
-      .footer-bottom { padding: 20px 24px 32px; }
+      .footer { padding: 40px 24px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer-headline { font-size: 36px; }
     }
   </style>
 </head>
@@ -862,31 +767,29 @@
 
 </article>
 
-<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-color-band">
-    <div style="background:#e8602a"></div>
-    <div style="background:#d4782a"></div>
-    <div style="background:#c09030"></div>
-    <div style="background:#8aaa38"></div>
-    <div style="background:#3d9e48"></div>
-    <div style="background:#2a9e80"></div>
-    <div style="background:#3d7abf"></div>
-    <div style="background:#4858b8"></div>
-    <div style="background:#7040b0"></div>
-    <div style="background:#9c1850"></div>
-    <div style="background:#c03a10"></div>
-    <div style="background:#c07820"></div>
+    <div class="footer-color-seg" style="background:#f2c882;"></div>
+    <div class="footer-color-seg" style="background:#e8602a;"></div>
+    <div class="footer-color-seg" style="background:#f5c518;"></div>
+    <div class="footer-color-seg" style="background:#8ec8d8;"></div>
+    <div class="footer-color-seg" style="background:#5a88c0;"></div>
+    <div class="footer-color-seg" style="background:#c080b0;"></div>
+    <div class="footer-color-seg" style="background:#d46828;"></div>
+    <div class="footer-color-seg" style="background:#b83810;"></div>
+    <div class="footer-color-seg" style="background:#783018;"></div>
+    <div class="footer-color-seg" style="background:#1a58b0;"></div>
+    <div class="footer-color-seg" style="background:#880030;"></div>
+    <div class="footer-color-seg" style="background:#d80858;"></div>
   </div>
   <div class="footer-top">
     <div class="footer-headline">Dress for<br>your <em>season.</em></div>
     <div class="footer-right-col">
-      <div class="footer-right-text">Goldenhue is building an AI-powered color analysis tool that identifies your exact season and curates a shoppable wardrobe around it. Join the waitlist for early access.</div>
-      <form class="footer-waitlist-form" name="footer-waitlist" method="POST" data-netlify="true">
-        <input type="hidden" name="form-name" value="footer-waitlist" />
-        <input type="email" name="email" placeholder="your@email.com" required />
-        <button type="submit">Notify Me</button>
-      </form>
+      <div class="footer-right-text">Goldenhue is a color season shopping platform launching soon. Join the waitlist to be first in line when we open.</div>
+      <div class="footer-waitlist-form">
+        <input type="email" placeholder="your@email.com">
+        <button>Notify Me</button>
+      </div>
     </div>
   </div>
   <div class="footer-bottom">
@@ -909,10 +812,10 @@
       }).toString()
     })
     .then(() => {
-      form.innerHTML = '<p style="color:#3d7abf;font-weight:400;font-size:1rem;line-height:1.6;padding:0.5rem 0;">✓ You\'re on the list! We\'ll be in touch when we launch.</p>';
+      form.innerHTML = '<p style="color:var(--summer);font-family:\'Josefin Sans\',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:0.5rem 0;">✓ You\'re on the list! We\'ll be in touch when we launch.</p>';
     })
     .catch(() => {
-      form.innerHTML = '<p style="color:#cc3333;font-weight:400;font-size:0.95rem;padding:0.5rem 0;">Something went wrong — please try again.</p>';
+      form.innerHTML = '<p style="color:var(--autumn);font-family:\'Josefin Sans\',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:0.5rem 0;">Something went wrong — please try again.</p>';
     });
   }
 </script>
