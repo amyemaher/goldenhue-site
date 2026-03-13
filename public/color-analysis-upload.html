@@ -310,12 +310,14 @@
     }
 
     /* ── LOADING STATE ── */
-    #state-loading {
-      min-height: calc(100vh - 64px);
+    /* Must use #state-loading.active (not just #state-loading) to avoid
+       overriding .state { display: none } with a higher-specificity ID rule */
+    #state-loading.active {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      min-height: calc(100vh - 64px);
       padding: 40px 24px;
     }
     .loading-ring {
@@ -868,7 +870,7 @@
   </div>
 
   <p class="upload-hint">Photos are processed locally for validation, then sent securely for analysis. They are not stored.</p>
-  <button class="btn-primary btn-accent" id="analyze-btn" onclick="startAnalysis()" disabled style="opacity:0.45;cursor:not-allowed;">
+  <button class="btn-primary btn-accent" id="analyze-btn" onclick="startAnalysis()" style="opacity:0.45;cursor:not-allowed;pointer-events:none;">
     Analyze my colors
   </button>
 </div>
@@ -1231,18 +1233,12 @@ function validateImage(img, slot, url, file) {
     return;
   }
 
-  // Convert to base64 for API
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const dataUrl = e.target.result;
-    const base64 = dataUrl.split(',')[1];
-    const mediaType = file.type || 'image/jpeg';
-    clearSlotError(slot);
-    fileData[slot] = { base64, mediaType };
-    setSlotReady(slot, url);
-    checkAnalyzeButton();
-  };
-  reader.readAsDataURL(file);
+  // Validation passed — store File synchronously so the button enables immediately.
+  // Base64 conversion happens in startAnalysis() when the user submits.
+  clearSlotError(slot);
+  fileData[slot] = { file, mediaType: file.type || 'image/jpeg' };
+  setSlotReady(slot, url);
+  checkAnalyzeButton();
 }
 
 function showSlotError(slot, msg) {
@@ -1267,9 +1263,11 @@ function setSlotReady(slot, url) {
 function checkAnalyzeButton() {
   const btn = document.getElementById('analyze-btn');
   const ok = !!fileData[1];
-  btn.disabled = !ok;
+  // Use CSS pointer-events rather than the `disabled` attribute — a disabled button
+  // swallows click events silently with no JS error, making it very hard to debug.
   btn.style.opacity = ok ? '1' : '0.45';
   btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+  btn.style.pointerEvents = ok ? 'auto' : 'none';
 }
 
 // ════════════════════════════════════════════════
@@ -1304,13 +1302,34 @@ function startLoadingCycle() {
 // ════════════════════════════════════════════════
 // ANALYSIS — CALL API
 // ════════════════════════════════════════════════
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}
+
 async function startAnalysis() {
   if (!fileData[1]) return;
   showState('loading');
 
-  const images = [1, 2, 3]
-    .filter(i => fileData[i])
-    .map(i => ({ data: fileData[i].base64, mediaType: fileData[i].mediaType }));
+  // Convert File objects to base64 now (at submit time, not at upload time)
+  let images;
+  try {
+    const slots = [1, 2, 3].filter(i => fileData[i]);
+    images = await Promise.all(
+      slots.map(async i => ({
+        data: await fileToBase64(fileData[i].file),
+        mediaType: fileData[i].mediaType,
+      }))
+    );
+  } catch (err) {
+    if (loadingInterval) clearInterval(loadingInterval);
+    showError('There was a problem reading your photo file. Please try selecting it again.');
+    return;
+  }
 
   let result;
   try {
