@@ -11,6 +11,19 @@ Summer family (cool, muted): Light Summer, True Summer, Soft Summer
 Autumn family (warm, muted): Soft Autumn, True Autumn, Dark Autumn
 Winter family (cool, clear): True Winter, Deep Winter, Bright Winter
 
+The most common misclassification errors are between seasons that share one trait. Pay special attention to:
+
+- Light Spring vs Light Summer: Both are light-value, but Light Spring has warm golden or peachy undertones and warm-toned hair (golden, strawberry, or warm blonde), while Light Summer has cool or neutral-pink undertones and cool-toned or ashy hair.
+- True Spring vs True Autumn: Both are warm, but True Spring is clear and bright while True Autumn is muted and earthy. Clear, saturated, jewel-toned eyes indicate Spring; soft, low-contrast, muted coloring indicates Autumn.
+- Bright Winter vs Bright Spring: Both are high-chroma, but Bright Winter is cool or icy with blue-based clarity while Bright Spring is warm with golden or peachy warmth. A cool-blue sheen in the eyes or a blue-pink skin tone indicates Winter; golden warmth indicates Spring.
+
+When determining undertone, use these visual cues:
+- Vein color on the inner wrist: blue or purple suggests cool; green or olive suggests warm; blue-green suggests neutral
+- The warmth or coolness of hair: golden, red, or strawberry tones are warm; ash, cool brown, or platinum are cool
+- Skin tone in natural light: pink, beige-pink, or rosy tones suggest cool; yellow, golden, or peachy tones suggest warm; olive or beige with a mix of both suggests neutral
+
+Always identify undertone first, then value (light/deep), then chroma (clear/muted). Season follows from those three traits — do not guess the season directly. State your undertone reading explicitly in feature_notes and explain what specific visual evidence led you to that conclusion.
+
 Return ONLY a valid JSON object with no markdown, no preamble, in exactly this structure:
 {
 "season": "Light Spring",
@@ -35,6 +48,20 @@ Return ONLY a valid JSON object with no markdown, no preamble, in exactly this s
 "neighboring_seasons": ["season name", "season name"],
 "color_mantra": "3-5 word phrase capturing the season essence e.g. Light and Bright Pastels"
 }`;
+
+function buildImageContent(images) {
+  const content = [];
+  images.forEach((img, i) => {
+    if (images.length > 1) {
+      content.push({ type: 'text', text: `Photo ${i + 1} of ${images.length}:` });
+    }
+    content.push({
+      type: 'image',
+      source: { type: 'base64', media_type: img.mediaType, data: img.data },
+    });
+  });
+  return content;
+}
 
 exports.handler = async (event) => {
   const headers = {
@@ -77,23 +104,10 @@ exports.handler = async (event) => {
     }
   }
 
-  // ── Build message content ──
-  const userContent = [];
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-  images.forEach((img, i) => {
-    if (images.length > 1) {
-      userContent.push({ type: 'text', text: `Photo ${i + 1} of ${images.length}:` });
-    }
-    userContent.push({
-      type: 'image',
-      source: {
-        type: 'base64',
-        media_type: img.mediaType,
-        data: img.data,
-      },
-    });
-  });
-
+  // ── Build primary message content ──
+  const userContent = buildImageContent(images);
   userContent.push({
     type: 'text',
     text: images.length > 1
@@ -101,9 +115,7 @@ exports.handler = async (event) => {
       : 'Please analyze this photo to determine this person\'s color season.',
   });
 
-  // ── Call Claude ──
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
+  // ── Call Claude — Primary Analysis ──
   let result;
   try {
     const message = await client.messages.create({
@@ -119,7 +131,7 @@ exports.handler = async (event) => {
     result = JSON.parse(clean);
 
   } catch (err) {
-    console.error('Claude error:', err);
+    console.error('Claude primary error:', err);
 
     // JSON parse failure — Claude may have been uncertain
     if (err instanceof SyntaxError) {
@@ -158,7 +170,7 @@ exports.handler = async (event) => {
     }
   }
 
-  // ── Low confidence fallback ──
+  // ── Very low confidence — cannot give a reliable reading ──
   if (result.confidence < 0.5) {
     return {
       statusCode: 422,
@@ -170,6 +182,52 @@ exports.handler = async (event) => {
         confidence: result.confidence,
       }),
     };
+  }
+
+  // ── Moderate confidence — needs one more photo before showing result ──
+  if (result.confidence < 0.75) {
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        needs_more_photos: true,
+        season_hint: result.season,
+        confidence: result.confidence,
+      }),
+    };
+  }
+
+  // ── Verification call — second opinion on same images ──
+  const verifyContent = buildImageContent(images);
+  verifyContent.push({
+    type: 'text',
+    text: `A color analyst has determined this person is ${result.season}. Do you agree? If not, what season would you assign and why? Look specifically at undertone evidence.\n\nRespond ONLY with this JSON object (no markdown, no preamble):\n{\n  "agree": true,\n  "season": "${result.season}",\n  "reasoning": "Your reasoning here"\n}\nIf you disagree, set "agree" to false and update "season" to the season you would assign.`,
+  });
+
+  let verification;
+  try {
+    const verifyMsg = await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 512,
+      messages: [{ role: 'user', content: verifyContent }],
+    });
+    const verifyText = verifyMsg.content.map(b => b.text || '').join('').trim();
+    const verifyClean = verifyText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    verification = JSON.parse(verifyClean);
+  } catch (err) {
+    console.error('Claude verification error:', err);
+    // Verification failed — return primary result without borderline info
+    verification = { agree: true, season: result.season, reasoning: '' };
+  }
+
+  // ── Combine primary + verification ──
+  if (!verification.agree && verification.season && verification.season !== result.season) {
+    result.borderline = true;
+    result.borderline_season = verification.season;
+    result.borderline_note = verification.reasoning
+      || `Our analysis flagged this as a close call between ${result.season} and ${verification.season}. Both are valid readings of your coloring — the difference often comes down to subtle undertone cues that are easier to read in person.`;
+  } else {
+    result.borderline = false;
   }
 
   return { statusCode: 200, headers, body: JSON.stringify(result) };

@@ -227,6 +227,17 @@
       line-height: 1.65;
     }
 
+    /* featured checklist item */
+    .featured-item {
+      background: color-mix(in srgb, var(--season-accent) 8%, var(--white));
+      margin: 0 -4px;
+      padding-left: 4px;
+      padding-right: 4px;
+      border-left: 3px solid var(--season-accent);
+    }
+    .featured-item .check-icon { background: var(--ink); }
+    .featured-item .check-icon svg path { stroke: var(--white); }
+
     /* ── UPLOAD STATE ── */
     #state-upload {
       max-width: 720px;
@@ -391,6 +402,69 @@
       position: absolute;
       left: 0;
       color: var(--season-accent);
+    }
+
+    /* ── RESUBMIT STATE ── */
+    #state-resubmit {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+    #state-resubmit h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .resubmit-badge {
+      display: inline-block;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--warm-mid);
+      border: 1px solid var(--season-accent);
+      padding: 6px 18px;
+      margin-bottom: 28px;
+      background: color-mix(in srgb, var(--season-accent) 10%, var(--white));
+    }
+    .resubmit-sub {
+      font-size: 16px;
+      color: var(--warm-mid);
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+    .resubmit-tip {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--season-accent);
+      padding: 18px 24px;
+      margin: 0 0 36px;
+      font-size: 14px;
+      color: var(--warm-mid);
+      line-height: 1.65;
+    }
+
+    /* ── BORDERLINE BANNER ── */
+    .borderline-banner {
+      background: color-mix(in srgb, var(--season-accent) 10%, var(--white));
+      border: 1px solid var(--season-accent);
+      padding: 20px 28px;
+      margin-bottom: 40px;
+    }
+    .borderline-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--season-accent);
+      margin-bottom: 8px;
+    }
+    .borderline-msg {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.65;
     }
 
     /* ── RESULT STATE ── */
@@ -723,7 +797,7 @@
     @media (max-width: 640px) {
       nav { padding: 0 20px; }
       ul.nav-links { display: none; }
-      #state-intro, #state-upload, #state-error { padding: 40px 16px 60px; }
+      #state-intro, #state-upload, #state-error, #state-resubmit { padding: 40px 16px 60px; }
       #state-result { padding: 0 16px 60px; }
       .feature-grid { grid-template-columns: 1fr; }
       .neutrals-grid { grid-template-columns: 1fr; }
@@ -792,11 +866,12 @@
         <p>Your natural hair color is a key data point — it tells us whether your coloring is high contrast, soft, or muted. Pulled back is fine; dyed is not ideal, but note it in your optional comments.</p>
       </div>
     </div>
-    <div class="checklist-item">
+    <div class="checklist-item featured-item">
       <div class="check-icon"><svg viewBox="0 0 12 9" fill="none"><path d="M1 4.5L4.5 8L11 1" stroke="#141210" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="checklist-text">
-        <strong>Plain background, neutral clothing</strong>
-        <p>Busy backgrounds and colorful tops create color bouncing — reflected hues that contaminate your skin tone reading. Wear a white t-shirt or drape a white towel over your shoulders.</p>
+        <strong>White or light grey top — this is the most important one</strong>
+        <p>This is what professional color analysts call draping. Wear a white or light grey top, or drape a white towel over your shoulders before taking the photo. It eliminates color bouncing — reflected hues from clothing that can shift your undertone reading by an entire season family. Everything else on this list helps; this one changes the result.</p>
+        <p style="margin-top:10px;font-size:13px;color:var(--ink);font-style:italic;">Uploading multiple photos? In one, wear a warm-toned top (cream, peach, or tan). In another, a cool-toned top (white, light grey, or soft blue). This lets us compare how each affects your complexion — the most telling signal of all.</p>
       </div>
     </div>
     <div class="checklist-item">
@@ -844,7 +919,7 @@
         </div>
         <div class="slot-info">
           <p class="slot-label">Photo 2 — Optional</p>
-          <p class="slot-desc">Different angle or slightly different lighting helps.</p>
+          <p class="slot-desc">For best results: try a warm-toned top (cream, peach, or tan).</p>
         </div>
         <span class="slot-status empty" id="status-2">Add photo</span>
       </div>
@@ -860,7 +935,7 @@
         </div>
         <div class="slot-info">
           <p class="slot-label">Photo 3 — Optional</p>
-          <p class="slot-desc">Outdoors or a wider frame can add useful context.</p>
+          <p class="slot-desc">For comparison: try a cool-toned top (white, light grey, or soft blue).</p>
         </div>
         <span class="slot-status empty" id="status-3">Add photo</span>
       </div>
@@ -909,9 +984,54 @@
 
 
 <!-- ══════════════════════════════════════
+     STATE 4b: RESUBMIT (low confidence)
+══════════════════════════════════════ -->
+<div id="state-resubmit" class="state">
+  <div class="resubmit-badge">One More Photo Needed</div>
+  <h2>We want to make sure your result is accurate.</h2>
+  <p class="resubmit-sub">Based on your photo, you may be a <strong id="resubmit-season"></strong> — but we'd like to see one more photo to be certain.</p>
+
+  <div class="resubmit-tip">
+    For the clearest result: wear a <strong>white or light grey top</strong> (or drape a white towel over your shoulders), stand in natural daylight, and skip makeup. This is the single change most likely to confirm your season.
+  </div>
+
+  <div class="upload-slots">
+    <div class="upload-slot" id="slot-rs"
+         ondragover="handleDragOver(event,'rs')"
+         ondragleave="handleDragLeave(event,'rs')"
+         ondrop="handleDrop(event,'rs')">
+      <div class="upload-slot-inner" onclick="triggerFileInput('rs')">
+        <div class="slot-preview" id="preview-rs">
+          <img id="preview-img-rs" alt="" />
+          <span class="slot-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="1" stroke="#7a7268" stroke-width="1.5"/><circle cx="8.5" cy="10.5" r="1.5" stroke="#7a7268" stroke-width="1.5"/><path d="M3 16l5-5 4 4 3-3 6 6" stroke="#7a7268" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="slot-info">
+          <p class="slot-label">Additional Photo — Required</p>
+          <p class="slot-desc">White or light grey top, natural light, no makeup.</p>
+        </div>
+        <span class="slot-status empty" id="status-rs">Add photo</span>
+      </div>
+      <div class="slot-error-msg" id="error-rs"></div>
+      <input type="file" id="file-input-rs" accept="image/*" onchange="handleFileSelectRS(event)" />
+    </div>
+  </div>
+
+  <p class="upload-hint">Your original photo is still included. This one gives us a clearer undertone reading.</p>
+  <button class="btn-primary btn-accent" id="reanalyze-btn" onclick="startAnalysis()" style="opacity:0.45;cursor:not-allowed;pointer-events:none;">
+    Reanalyze my colors
+  </button>
+</div>
+
+
+<!-- ══════════════════════════════════════
      STATE 5: RESULT (DYNAMIC)
 ══════════════════════════════════════ -->
 <div id="state-result" class="state">
+
+  <div class="borderline-banner" id="borderline-banner" style="display:none;">
+    <p class="borderline-label">Borderline Result</p>
+    <p class="borderline-msg" id="borderline-msg"></p>
+  </div>
 
   <div class="result-reveal">
     <div class="result-badge">Your Color Analysis Result</div>
@@ -1145,14 +1265,15 @@ function colorNameToHex(name) {
 // ════════════════════════════════════════════════
 // STATE MANAGEMENT
 // ════════════════════════════════════════════════
-const STATES = ['intro', 'upload', 'loading', 'error', 'result'];
-const PROGRESS = { intro: '25%', upload: '50%', loading: '75%', error: '50%', result: '100%' };
+const STATES = ['intro', 'upload', 'loading', 'error', 'resubmit', 'result'];
+const PROGRESS = { intro: '25%', upload: '50%', loading: '75%', error: '50%', resubmit: '65%', result: '100%' };
 const LABELS   = {
-  intro:   'Step 1 of 2 — Before You Upload',
-  upload:  'Step 2 of 2 — Upload Your Photos',
-  loading: 'Analyzing…',
-  error:   'Step 2 of 2 — Upload Your Photos',
-  result:  'Your Results',
+  intro:     'Step 1 of 2 — Before You Upload',
+  upload:    'Step 2 of 2 — Upload Your Photos',
+  loading:   'Analyzing…',
+  error:     'Step 2 of 2 — Upload Your Photos',
+  resubmit:  'Step 2 of 2 — One More Photo',
+  result:    'Your Results',
 };
 
 function showState(name) {
@@ -1169,7 +1290,8 @@ function goToUpload() { showState('upload'); }
 // ════════════════════════════════════════════════
 // FILE HANDLING & VALIDATION
 // ════════════════════════════════════════════════
-const fileData = { 1: null, 2: null, 3: null }; // { file, base64, mediaType }
+const fileData = { 1: null, 2: null, 3: null }; // { file, mediaType }
+let pendingLowConf = null; // tracks low-confidence season hint for resubmit flow
 
 function triggerFileInput(slot) { document.getElementById('file-input-' + slot).click(); }
 
@@ -1184,11 +1306,18 @@ function handleDrop(e, slot) {
   e.preventDefault();
   document.getElementById('slot-' + slot).classList.remove('dragover');
   const file = e.dataTransfer.files[0];
-  if (file) processFile(file, slot);
+  if (file) {
+    if (slot === 'rs') processFileRS(file);
+    else processFile(file, slot);
+  }
 }
 function handleFileSelect(e, slot) {
   const file = e.target.files[0];
   if (file) processFile(file, slot);
+}
+function handleFileSelectRS(e) {
+  const file = e.target.files[0];
+  if (file) processFileRS(file);
 }
 
 function processFile(file, slot) {
@@ -1268,6 +1397,49 @@ function checkAnalyzeButton() {
   btn.style.opacity = ok ? '1' : '0.45';
   btn.style.cursor = ok ? 'pointer' : 'not-allowed';
   btn.style.pointerEvents = ok ? 'auto' : 'none';
+
+  // Also update the reanalyze button (resubmit flow)
+  const reBtn = document.getElementById('reanalyze-btn');
+  if (reBtn) {
+    const reOk = !!fileData[2];
+    reBtn.style.opacity = reOk ? '1' : '0.45';
+    reBtn.style.cursor = reOk ? 'pointer' : 'not-allowed';
+    reBtn.style.pointerEvents = reOk ? 'auto' : 'none';
+  }
+}
+
+// ── Resubmit slot file processing (writes to fileData[2]) ──
+function processFileRS(file) {
+  if (!file.type.startsWith('image/')) {
+    showResubmitSlotError('That file doesn\'t appear to be an image. Please choose a JPG or PNG.');
+    return;
+  }
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    if (img.naturalWidth < 200 || img.naturalHeight < 200) {
+      showResubmitSlotError('This photo is too small. Please try a larger photo taken with your phone camera.');
+      return;
+    }
+    fileData[2] = { file, mediaType: file.type || 'image/jpeg' };
+    const imgEl = document.getElementById('preview-img-rs');
+    imgEl.src = url; imgEl.classList.add('loaded');
+    const s = document.getElementById('status-rs');
+    s.textContent = 'Ready ✓'; s.className = 'slot-status ready';
+    const errEl = document.getElementById('error-rs');
+    errEl.textContent = ''; errEl.classList.remove('visible');
+    checkAnalyzeButton();
+  };
+  img.onerror = () => showResubmitSlotError('Could not load this image. Please try another file.');
+  img.src = url;
+}
+function showResubmitSlotError(msg) {
+  const el = document.getElementById('error-rs');
+  el.textContent = msg; el.classList.add('visible');
+  const s = document.getElementById('status-rs');
+  s.textContent = 'Issue'; s.className = 'slot-status error';
+  fileData[2] = null;
+  checkAnalyzeButton();
 }
 
 // ════════════════════════════════════════════════
@@ -1355,6 +1527,24 @@ async function startAnalysis() {
   }
 
   if (loadingInterval) clearInterval(loadingInterval);
+
+  // Moderate confidence — ask for one more photo before showing result
+  if (result.needs_more_photos) {
+    pendingLowConf = { season_hint: result.season_hint, confidence: result.confidence };
+    document.getElementById('resubmit-season').textContent = result.season_hint || 'a particular season';
+    // Reset resubmit slot
+    fileData[2] = null;
+    const rsImg = document.getElementById('preview-img-rs');
+    if (rsImg) { rsImg.src = ''; rsImg.classList.remove('loaded'); }
+    const rsStatus = document.getElementById('status-rs');
+    if (rsStatus) { rsStatus.textContent = 'Add photo'; rsStatus.className = 'slot-status empty'; }
+    const rsErr = document.getElementById('error-rs');
+    if (rsErr) { rsErr.textContent = ''; rsErr.classList.remove('visible'); }
+    checkAnalyzeButton();
+    showState('resubmit');
+    return;
+  }
+
   renderResult(result);
 }
 
@@ -1372,6 +1562,16 @@ function renderResult(data) {
 
   // Update CSS accent variable globally
   document.documentElement.style.setProperty('--season-accent', config.accent);
+
+  // Borderline banner
+  const borderlineBanner = document.getElementById('borderline-banner');
+  if (data.borderline && data.borderline_season) {
+    borderlineBanner.style.display = 'block';
+    document.getElementById('borderline-msg').textContent = data.borderline_note ||
+      `Our analysis flagged this as a close call between ${season} and ${data.borderline_season}. The result shown reflects the stronger reading — but if this palette doesn't feel quite right, explore ${data.borderline_season} as well.`;
+  } else {
+    borderlineBanner.style.display = 'none';
+  }
 
   // Season reveal
   document.getElementById('r-season-name').textContent = season;
